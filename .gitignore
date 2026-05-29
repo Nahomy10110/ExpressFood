@@ -1,0 +1,43 @@
+# Built artifacts
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+out/
+release/
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+local.properties
+
+# IntelliJ / Android Studio
+*.iml
+.idea/
+captures/
+
+# Logs
+*.log
+
+# Firebase (NO COMMITEAR)
+google-services.json
+GoogleService-Info.plist
+
+# Keystores (NO COMMITEAR)
+*.jks
+*.keystore
+keystore.base64.txt
+google-services.base64.txt
+keystore.properties
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cobertura
+*.exec
+jacoco/

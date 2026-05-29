@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ExpressFood</string>
+    <!-- Se llena en la Fase 6, Paso 6.7 -->
+    <string name="default_web_client_id">360220780636-06kq8biue9odkst5vtsrv78oefbm3ah5.apps.googleusercontent.com</string>
+</resources>
