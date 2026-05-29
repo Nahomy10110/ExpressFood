@@ -9,7 +9,7 @@ plugins {
 
 sonar {
     properties {
-        property("sonar.projectKey", "Nahomy10110_ExpressFood")
+        property("sonar.projectKey", "Nahomy10110_ExpressFood2")
         property("sonar.organization", "Nahomy10110")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.projectName", "ExpressFood")
