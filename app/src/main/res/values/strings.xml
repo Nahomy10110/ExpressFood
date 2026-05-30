@@ -1,5 +1,29 @@
 <resources>
     <string name="app_name">ExpressFood</string>
-    <!-- Se llena en la Fase 6, Paso 6.7 -->
+    <string name="login_title">Iniciar sesión</string>
+    <string name="login_tagline">Tu comida favorita, al instante</string>
+    <string name="login_google_button">Continuar con Google</string>
+    <string name="login_gmail_note">Solo cuentas @gmail.com</string>
+    <string name="login_offline_note">Funciona offline · Sincroniza al conectar</string>
+    <string name="login_error_title">Error de inicio de sesión</string>
+    <string name="login_error_cancelled">Inicio de sesión cancelado</string>
+    <string name="login_error_generic">No se pudo iniciar sesión. Intenta de nuevo.</string>
+
+    <!-- NO TOCAR-->
     <string name="default_web_client_id">360220780636-06kq8biue9odkst5vtsrv78oefbm3ah5.apps.googleusercontent.com</string>
+
+    <string name="offline_banner">Sin conexión — modo offline</string>
+    <string name="online_banner">Conectado</string>
+    <string name="ok">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="retry">Reintentar</string>
+    <string name="loading">Cargando…</string>
+    <string name="menu_search_hint">Buscar platillo o ingrediente…</string>
+    <string name="cart_added">Agregado al carrito</string>
+    <string name="cart_empty">Tu carrito está vacío</string>
+    <string name="cart_process_order">Procesar orden</string>
+    <string name="admin_panel_title">Panel Administrador</string>
+    <string name="admin_change_status">Cambiar estado</string>
+    <string name="login_sheet_subtitle">Continúa con tu cuenta de Google</string>
+
 </resources>
