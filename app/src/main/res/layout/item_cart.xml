@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
+
+    <!-- Imagen -->
+    <ImageView
+        android:id="@+id/ivCartItem"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/bg_image_placeholder"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Nombre -->
+    <TextView
+        android:id="@+id/tvCartItemName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginStart="12dp"
+        app:layout_constraintTop_toTopOf="@id/ivCartItem"
+        app:layout_constraintStart_toEndOf="@id/ivCartItem"
+        app:layout_constraintEnd_toStartOf="@id/tvCartItemSubtotal" />
+
+    <!-- Precio unitario -->
+    <TextView
+        android:id="@+id/tvCartItemPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/text_secondary"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/tvCartItemName"
+        app:layout_constraintStart_toEndOf="@id/ivCartItem"
+        app:layout_constraintEnd_toStartOf="@id/tvCartItemSubtotal" />
+
+    <!-- Controles cantidad -->
+    <LinearLayout
+        android:id="@+id/quantityControls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvCartItemPrice"
+        app:layout_constraintStart_toEndOf="@id/ivCartItem"
+        app:layout_constraintBottom_toBottomOf="@id/ivCartItem">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDecrease"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:text="−"
+            android:textSize="18sp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            app:cornerRadius="16dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+        <TextView
+            android:id="@+id/tvQuantity"
+            android:layout_width="36dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnIncrease"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:text="+"
+            android:textSize="18sp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="@color/green_primary"
+            style="@style/Widget.MaterialComponents.Button.Icon" />
+    </LinearLayout>
+
+    <!-- Subtotal del ítem -->
+    <TextView
+        android:id="@+id/tvCartItemSubtotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/green_primary"
+        app:layout_constraintTop_toTopOf="@id/ivCartItem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/ivCartItem" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:background="@color/stroke_light"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/ivCartItem"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
