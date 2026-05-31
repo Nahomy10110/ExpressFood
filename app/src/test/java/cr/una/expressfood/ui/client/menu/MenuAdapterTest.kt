@@ -1,18 +1,37 @@
 package cr.una.expressfood.ui.client.menu
 
+import android.app.Application
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ApplicationProvider
 import cr.una.expressfood.domain.model.Product
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [33])
 class MenuAdapterTest {
 
     private lateinit var adapter: MenuAdapter
+    private lateinit var recyclerView: RecyclerView
     private lateinit var items: List<Product>
 
     @Before
     fun setUp() {
+        val context = ApplicationProvider.getApplicationContext<Application>()
+
         adapter = MenuAdapter {}
+
+        // Robolectric necesita que el RecyclerView tenga LayoutManager para itemCount
+        recyclerView = RecyclerView(context).apply {
+            layoutManager = LinearLayoutManager(context)
+            this.adapter = this@MenuAdapterTest.adapter
+        }
+
         items = listOf(
             makeProduct("1", "Hamburguesa Clásica", listOf("lechuga", "tomate", "queso")),
             makeProduct("2", "Pizza Margherita",    listOf("mozzarella", "albahaca", "tomate")),
@@ -36,7 +55,7 @@ class MenuAdapterTest {
     @Test
     fun `filter por ingrediente retorna coincidencias`() {
         adapter.filter("tomate")
-        assertEquals(2, adapter.itemCount)   // hamburguesa y pizza tienen tomate
+        assertEquals(2, adapter.itemCount)
     }
 
     @Test
