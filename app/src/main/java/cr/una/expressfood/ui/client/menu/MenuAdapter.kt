@@ -29,16 +29,7 @@ class MenuAdapter(
      * Si query está vacío restaura la lista completa.
      */
     fun filter(query: String) {
-        if (query.isBlank()) {
-            submitList(fullList)
-            return
-        }
-        val lower = query.lowercase().trim()
-        val filtered = fullList.filter { product ->
-            product.name.lowercase().contains(lower) ||
-                    product.ingredients.any { it.lowercase().contains(lower) }
-        }
-        submitList(filtered)
+        submitList(ProductFilter.filter(query, fullList))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
