@@ -14,6 +14,9 @@
         android:name="cr.una.expressfood.ui.admin.reports.AdminReportsFragment"
         android:label="Reportes" />
 
-
+    <fragment
+        android:id="@+id/adminProductsFragment"
+        android:name="cr.una.expressfood.ui.admin.products.AdminProductsFragment"
+        android:label="Productos" />
 
 </navigation>

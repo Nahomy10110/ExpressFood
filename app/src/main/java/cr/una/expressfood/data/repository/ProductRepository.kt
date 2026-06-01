@@ -9,6 +9,7 @@ import cr.una.expressfood.util.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import cr.una.expressfood.domain.model.toEntity
 
 class ProductRepository(
     private val productDao: ProductDao,
@@ -61,5 +62,59 @@ class ProductRepository(
 
     companion object {
         fun default(productDao: ProductDao) = ProductRepository(productDao)
+    }
+
+    // CRUD — solo admin
+
+    suspend fun createProduct(product: Product): Result<Unit> = runCatching {
+        val entity = product.toEntity()
+        // 1. Room primero (offline-first)
+        productDao.upsert(entity)
+        // 2. Firestore como backup
+        syncProductToFirestore(entity)
+    }
+
+    suspend fun updateProduct(product: Product): Result<Unit> = runCatching {
+        val entity = product.copy(updatedAt = System.currentTimeMillis()).toEntity()
+        productDao.upsert(entity)
+        syncProductToFirestore(entity)
+    }
+
+    suspend fun setProductAvailability(productId: String, available: Boolean): Result<Unit> = runCatching {
+        productDao.setAvailable(productId, available)
+        firestore.collection(Constants.Firestore.PRODUCTS)
+            .document(productId)
+            .update("available", available)
+            .await()
+    }
+
+    suspend fun deleteProduct(productId: String): Result<Unit> = runCatching {
+        productDao.deleteById(productId)
+        firestore.collection(Constants.Firestore.PRODUCTS)
+            .document(productId)
+            .delete()
+            .await()
+    }
+
+    private suspend fun syncProductToFirestore(entity: ProductEntity) {
+        runCatching {
+            val data = mapOf(
+                "id"                   to entity.id,
+                "name"                 to entity.name,
+                "description"          to entity.description,
+                "ingredients"          to entity.ingredients,
+                "price"                to entity.price,
+                "imageUrl"             to entity.imageUrl,
+                "estimatedTimeMinutes" to entity.estimatedTimeMinutes,
+                "category"             to entity.category,
+                "available"            to entity.available,
+                "createdAt"            to entity.createdAt,
+                "updatedAt"            to entity.updatedAt
+            )
+            firestore.collection(Constants.Firestore.PRODUCTS)
+                .document(entity.id)
+                .set(data)
+                .await()
+        }
     }
 }

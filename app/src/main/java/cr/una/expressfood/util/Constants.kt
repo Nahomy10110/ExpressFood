@@ -13,4 +13,11 @@ object Constants {
         const val PRODUCTS = "products"
         const val ORDERS   = "orders"
     }
+
+    object Cloudinary {
+        const val CLOUD_NAME    = "dazbijp71"
+        const val API_KEY       = "447589271833274"
+        const val UPLOAD_PRESET = "expressfood_products"
+        const val UPLOAD_URL    = "https://api.cloudinary.com/v1_1/$CLOUD_NAME/image/upload"
+    }
 }
