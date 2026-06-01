@@ -12,6 +12,8 @@ import cr.una.expressfood.R
 import cr.una.expressfood.databinding.FragmentReportsBinding
 import cr.una.expressfood.domain.usecase.DayReport
 import kotlinx.coroutines.launch
+import cr.una.expressfood.ui.common.ChartHelper
+
 
 class ClientReportsFragment : Fragment() {
 
@@ -52,6 +54,7 @@ class ClientReportsFragment : Fragment() {
                         binding.tvTotalOrders.text    = report.totalOrders.toString()
                         binding.tvTotalAmount.text    = "₡${"%,.0f".format(report.totalAmount)}"
                         populateDays(report.days)
+                        ChartHelper.setupBarChart(binding.barChart, report.days)
                     }
                     is ClientReportsViewModel.ReportState.Empty -> {
                         binding.progressBarReport.visibility  = View.GONE

@@ -107,6 +107,8 @@ dependencies {
     // Glide
     implementation(libs.glide)
 
+    implementation(libs.mpandroidchart)
+
     // Test
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
@@ -116,6 +118,7 @@ dependencies {
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.androidx.room.testing)
+
 
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.espresso.core)
