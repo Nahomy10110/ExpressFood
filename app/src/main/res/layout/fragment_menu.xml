@@ -60,6 +60,23 @@
                 android:contentDescription="Avatar"
                 android:scaleType="centerCrop" />
 
+            <!-- Después del ImageView ivUserAvatar -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnClientLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="Salir"
+                android:textSize="11sp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:layout_marginStart="8dp"
+                app:cornerRadius="8dp"
+                app:strokeColor="#33FFFFFF"
+                app:strokeWidth="1dp"
+                android:textColor="@color/text_on_green"
+                app:backgroundTint="@android:color/transparent"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
         </LinearLayout>
 
         <!-- Barra de búsqueda -->
