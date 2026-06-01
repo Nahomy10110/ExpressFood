@@ -19,4 +19,9 @@
         android:name="cr.una.expressfood.ui.client.orders.MyOrdersFragment"
         android:label="Mis Órdenes" />
 
+    <fragment
+        android:id="@+id/clientReportsFragment"
+        android:name="cr.una.expressfood.ui.client.reports.ClientReportsFragment"
+        android:label="Reportes" />
+
 </navigation>

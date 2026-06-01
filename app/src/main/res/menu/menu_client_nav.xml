@@ -16,4 +16,9 @@
         android:icon="@drawable/ic_nav_orders"
         android:title="Mis Órdenes" />
 
+    <item
+        android:id="@+id/clientReportsFragment"
+        android:icon="@drawable/ic_nav_orders"
+        android:title="Reportes" />
+
 </menu>

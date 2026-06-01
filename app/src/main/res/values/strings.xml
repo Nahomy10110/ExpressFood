@@ -25,5 +25,8 @@
     <string name="admin_panel_title">Panel Administrador</string>
     <string name="admin_change_status">Cambiar estado</string>
     <string name="login_sheet_subtitle">Continúa con tu cuenta de Google</string>
+    <string name="reports_title_client">Mis Reportes</string>
+    <string name="reports_title_admin">Reportes Globales</string>
+    <string name="reports_empty">Sin órdenes este mes</string>
 
 </resources>

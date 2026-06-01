@@ -1,4 +1,4 @@
-package cr.una.expressfood.ui.admin.reports
+package cr.una.expressfood.ui.client.reports
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,13 +13,13 @@ import cr.una.expressfood.databinding.FragmentReportsBinding
 import cr.una.expressfood.domain.usecase.DayReport
 import kotlinx.coroutines.launch
 
-class AdminReportsFragment : Fragment() {
+class ClientReportsFragment : Fragment() {
 
     private var _binding: FragmentReportsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: AdminReportsViewModel by viewModels {
-        AdminReportsViewModel.Factory(requireActivity().application)
+    private val viewModel: ClientReportsViewModel by viewModels {
+        ClientReportsViewModel.Factory(requireActivity().application)
     }
 
     override fun onCreateView(
@@ -32,7 +32,7 @@ class AdminReportsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.tvReportTitle.text = "Reportes Globales"
+        binding.tvReportTitle.text = "Mis Reportes"
         observeViewModel()
     }
 
@@ -40,22 +40,22 @@ class AdminReportsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.reportState.collect { state ->
                 when (state) {
-                    is AdminReportsViewModel.ReportState.Loading -> {
-                        binding.progressBarReport.visibility = View.VISIBLE
-                        binding.layoutReportEmpty.visibility = View.GONE
+                    is ClientReportsViewModel.ReportState.Loading -> {
+                        binding.progressBarReport.visibility  = View.VISIBLE
+                        binding.layoutReportEmpty.visibility  = View.GONE
                     }
-                    is AdminReportsViewModel.ReportState.Success -> {
-                        binding.progressBarReport.visibility = View.GONE
-                        binding.layoutReportEmpty.visibility = View.GONE
+                    is ClientReportsViewModel.ReportState.Success -> {
+                        binding.progressBarReport.visibility  = View.GONE
+                        binding.layoutReportEmpty.visibility  = View.GONE
                         val report = state.report
-                        binding.tvReportMonth.text  = report.monthLabel
-                        binding.tvTotalOrders.text  = report.totalOrders.toString()
-                        binding.tvTotalAmount.text  = "₡${"%,.0f".format(report.totalAmount)}"
+                        binding.tvReportMonth.text    = report.monthLabel
+                        binding.tvTotalOrders.text    = report.totalOrders.toString()
+                        binding.tvTotalAmount.text    = "₡${"%,.0f".format(report.totalAmount)}"
                         populateDays(report.days)
                     }
-                    is AdminReportsViewModel.ReportState.Empty -> {
-                        binding.progressBarReport.visibility = View.GONE
-                        binding.layoutReportEmpty.visibility = View.VISIBLE
+                    is ClientReportsViewModel.ReportState.Empty -> {
+                        binding.progressBarReport.visibility  = View.GONE
+                        binding.layoutReportEmpty.visibility  = View.VISIBLE
                         binding.tvTotalOrders.text = "0"
                         binding.tvTotalAmount.text = "₡0"
                     }
