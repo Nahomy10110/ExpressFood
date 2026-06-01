@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_client"
+    app:startDestination="@id/menuFragment">
+
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="cr.una.expressfood.ui.client.menu.MenuFragment"
+        android:label="Menú" />
+
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="cr.una.expressfood.ui.client.cart.CartFragment"
+        android:label="Carrito" />
+
+    <fragment
+        android:id="@+id/myOrdersFragment"
+        android:name="cr.una.expressfood.ui.client.orders.MyOrdersFragment"
+        android:label="Mis Órdenes" />
+
+    <fragment
+        android:id="@+id/clientReportsFragment"
+        android:name="cr.una.expressfood.ui.client.reports.ClientReportsFragment"
+        android:label="Reportes" />
+
+</navigation>

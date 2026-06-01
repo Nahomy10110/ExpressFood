@@ -1,3 +1,5 @@
+import org.gradle.testing.jacoco.tasks.JacocoReport
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -23,24 +25,23 @@ android {
 
     signingConfigs {
         create("release") {
-            // Lee variables de entorno (inyectadas en CI). En local fallback a gradle.properties.
-            val ksPath = System.getenv("KEYSTORE_PATH") ?: project.findProperty("KEYSTORE_PATH") as String?
-            val ksPwd  = System.getenv("KEYSTORE_PASSWORD") ?: project.findProperty("KEYSTORE_PASSWORD") as String?
-            val ksAlias = System.getenv("KEY_ALIAS") ?: project.findProperty("KEY_ALIAS") as String?
-            val ksKeyPwd = System.getenv("KEY_PASSWORD") ?: project.findProperty("KEY_PASSWORD") as String?
+            val ksPath   = System.getenv("KEYSTORE_PATH")     ?: project.findProperty("KEYSTORE_PATH")     as String?
+            val ksPwd    = System.getenv("KEYSTORE_PASSWORD") ?: project.findProperty("KEYSTORE_PASSWORD") as String?
+            val ksAlias  = System.getenv("KEY_ALIAS")         ?: project.findProperty("KEY_ALIAS")         as String?
+            val ksKeyPwd = System.getenv("KEY_PASSWORD")      ?: project.findProperty("KEY_PASSWORD")      as String?
 
             if (ksPath != null) {
-                storeFile = file(ksPath)
+                storeFile     = file(ksPath)
                 storePassword = ksPwd
-                keyAlias = ksAlias
-                keyPassword = ksKeyPwd
+                keyAlias      = ksAlias
+                keyPassword   = ksKeyPwd
             }
         }
     }
 
     buildTypes {
         debug {
-            isMinifyEnabled = false
+            isMinifyEnabled        = false
             enableUnitTestCoverage = true
         }
         release {
@@ -60,13 +61,13 @@ android {
     kotlinOptions { jvmTarget = "17" }
 
     buildFeatures {
-        viewBinding = true
-        buildConfig = true
+        viewBinding  = true
+        buildConfig  = true
     }
 
     testOptions {
         unitTests.isIncludeAndroidResources = true
-        unitTests.isReturnDefaultValues = true
+        unitTests.isReturnDefaultValues     = true
     }
 }
 
@@ -106,6 +107,8 @@ dependencies {
     // Glide
     implementation(libs.glide)
 
+    implementation(libs.mpandroidchart)
+
     // Test
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
@@ -115,6 +118,7 @@ dependencies {
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.androidx.room.testing)
+
 
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -128,14 +132,14 @@ jacoco {
 tasks.withType<Test>().configureEach {
     extensions.configure(JacocoTaskExtension::class) {
         isIncludeNoLocationClasses = true
-        excludes = listOf("jdk.internal.*")
+        excludes                   = listOf("jdk.internal.*")
     }
 }
 
 tasks.register<JacocoReport>("jacocoTestReport") {
     dependsOn("testDebugUnitTest")
-    group = "verification"
-    description = "Genera el reporte de cobertura de las pruebas unitarias debug."
+    group       = "verification"
+    description = "Reporte de cobertura — excluye UI y capas no testeables en JVM."
 
     reports {
         xml.required.set(true)
@@ -143,17 +147,42 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     }
 
     val fileFilter = listOf(
-        "**/R.class", "**/R$*.class", "**/BuildConfig.*",
-        "**/Manifest*.*", "**/*Test*.*", "android/**/*.*",
-        "**/databinding/**", "**/generated/**"
+        // Generados por Android
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "android/**/*.*",
+        "**/databinding/**",
+        "**/generated/**",
+
+        // UI — no testeable en JVM
+        "**/ui/**",
+        "**/*Activity*",
+        "**/*Fragment*",
+        "**/*Adapter*",
+        "**/*ViewHolder*",
+
+        // Capa local — Room no corre en JVM
+        "**/data/local/**",
+
+        // Repositorios — dependen de Firebase/Room
+        "**/data/repository/**",
+
+        // Sync — WorkManager no corre en JVM
+        "**/data/sync/**",
+
+        // Application class y DI
+        "**/ExpressFoodApp*",
+        "**/di/**"
     )
+
     val debugTree = fileTree("${layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
         exclude(fileFilter)
     }
-    val mainSrc = "${project.projectDir}/src/main/java"
 
-    sourceDirectories.setFrom(files(listOf(mainSrc)))
-    classDirectories.setFrom(files(listOf(debugTree)))
+    sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
+    classDirectories.setFrom(files(debugTree))
     executionData.setFrom(
         fileTree(layout.buildDirectory.get()) {
             include(

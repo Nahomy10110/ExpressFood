@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_admin"
+    app:startDestination="@id/adminOrdersFragment">
+
+    <fragment
+        android:id="@+id/adminOrdersFragment"
+        android:name="cr.una.expressfood.ui.admin.orders.AdminOrdersFragment"
+        android:label="Órdenes" />
+
+    <fragment
+        android:id="@+id/adminReportsFragment"
+        android:name="cr.una.expressfood.ui.admin.reports.AdminReportsFragment"
+        android:label="Reportes" />
+
+    <fragment
+        android:id="@+id/adminProductsFragment"
+        android:name="cr.una.expressfood.ui.admin.products.AdminProductsFragment"
+        android:label="Productos" />
+
+</navigation>

@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="green_primary">#2E7D32</color>
+    <color name="green_dark">#1B5E20</color>
+    <color name="green_light">#4CAF50</color>
+    <color name="green_surface">#E8F5E9</color>
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_on_green">#FFFFFF</color>
+    <color name="background_login">#F1F8E9</color>
+    <color name="background_white">#FFFFFF</color>
+    <color name="stroke_light">#E0E0E0</color>
+    <color name="status_creada">#9E9E9E</color>
+    <color name="status_pendiente">#FF9800</color>
+    <color name="status_en_camino">#2196F3</color>
+    <color name="status_entregada">#4CAF50</color>
+    <color name="status_cancelada">#F44336</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Diseño oscuro login -->
+    <color name="bg_deep">#0A1A0D</color>
+    <color name="icon_surface">#1A3A1E</color>
+    <color name="green_accent">#4AB44A</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_muted">#66FFFFFF</color>
+    <color name="text_very_muted">#33FFFFFF</color>
+    <color name="handle_color">#1FFFFFFF</color>
 </resources>
