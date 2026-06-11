@@ -24,21 +24,13 @@ class AdminOrdersViewModel(
         object Empty : AdminOrdersState()
     }
 
-    sealed class StatusUpdateState {
-        object Idle : StatusUpdateState()
-        object Success : StatusUpdateState()
-        data class Error(val message: String) : StatusUpdateState()
-    }
-
     private val _ordersState = MutableStateFlow<AdminOrdersState>(AdminOrdersState.Loading)
     val ordersState: StateFlow<AdminOrdersState> = _ordersState.asStateFlow()
 
-    private val _statusUpdate = MutableStateFlow<StatusUpdateState>(StatusUpdateState.Idle)
-    val statusUpdate: StateFlow<StatusUpdateState> = _statusUpdate.asStateFlow()
-
-    private val _activeFilter = MutableStateFlow<OrderStatus?>(null)
-
     init {
+        // Escuchar Firestore en tiempo real — trae órdenes de todos los clientes
+        orderRepository.listenToAllOrdersFromFirestore()
+        // Observar Room — se actualiza cuando llegan datos de Firestore
         observeAllOrders()
     }
 
@@ -57,19 +49,8 @@ class AdminOrdersViewModel(
         viewModelScope.launch {
             runCatching {
                 orderRepository.updateStatus(orderId, newStatus)
-            }.onSuccess {
-                _statusUpdate.value = StatusUpdateState.Success
-                _statusUpdate.value = StatusUpdateState.Idle
-            }.onFailure {
-                _statusUpdate.value = StatusUpdateState.Error(
-                    it.message ?: "Error al actualizar el estado"
-                )
             }
         }
-    }
-
-    fun setFilter(status: OrderStatus?) {
-        _activeFilter.value = status
     }
 
     class Factory(private val app: Application) : ViewModelProvider.Factory {

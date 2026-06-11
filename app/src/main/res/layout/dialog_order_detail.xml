@@ -14,7 +14,6 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- Header: número + estado -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,6 +42,7 @@
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
                 android:background="@drawable/bg_status_badge" />
+
         </LinearLayout>
 
         <!-- Fecha -->
@@ -59,9 +59,9 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#E0E0E0"
-            android:layout_marginBottom="14dp" />
+            android:layout_marginBottom="12dp" />
 
-        <!-- Título ítems -->
+        <!-- Título productos -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
             android:textColor="#1A1A1A"
             android:layout_marginBottom="10dp" />
 
-        <!-- Lista de ítems -->
+        <!-- Lista de ítems — se llena desde código -->
         <LinearLayout
             android:id="@+id/layoutItems"
             android:layout_width="match_parent"
@@ -84,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#E0E0E0"
-            android:layout_marginBottom="14dp" />
+            android:layout_marginBottom="12dp" />
 
         <!-- Subtotal -->
         <LinearLayout
@@ -92,6 +92,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="4dp">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -99,12 +100,14 @@
                 android:text="Subtotal"
                 android:textSize="13sp"
                 android:textColor="#757575" />
+
             <TextView
                 android:id="@+id/tvDialogSubtotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
                 android:textColor="#1A1A1A" />
+
         </LinearLayout>
 
         <!-- Impuestos -->
@@ -113,6 +116,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="10dp">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -120,12 +124,14 @@
                 android:text="Impuestos (13%)"
                 android:textSize="13sp"
                 android:textColor="#757575" />
+
             <TextView
                 android:id="@+id/tvDialogTaxes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
                 android:textColor="#1A1A1A" />
+
         </LinearLayout>
 
         <!-- Divisor -->
@@ -141,6 +147,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="16dp">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -149,6 +156,7 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="#1A1A1A" />
+
             <TextView
                 android:id="@+id/tvDialogTotal"
                 android:layout_width="wrap_content"
@@ -156,39 +164,37 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="#2E7D32" />
+
         </LinearLayout>
 
-        <!-- Dirección -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="6dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="📍 "
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/tvDialogAddress"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="12sp"
-                android:textColor="#757575" />
-        </LinearLayout>
-
-        <!-- Notas -->
+        <!-- Dirección — sin emoji -->
         <TextView
-            android:id="@+id/tvDialogNotes"
+            android:id="@+id/tvDialogAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="#757575"
-            android:visibility="gone" />
+            android:layout_marginBottom="6dp"
+            android:drawablePadding="6dp" />
+
+        <!-- Notas — solo visible si hay notas -->
+        <LinearLayout
+            android:id="@+id/layoutNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvDialogNotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="#757575" />
+
+        </LinearLayout>
 
         <!-- Botón cerrar -->
         <com.google.android.material.button.MaterialButton

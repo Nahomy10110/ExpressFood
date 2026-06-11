@@ -31,7 +31,6 @@ class MyOrdersViewModel(
     private val _ordersState = MutableStateFlow<OrdersState>(OrdersState.Loading)
     val ordersState: StateFlow<OrdersState> = _ordersState.asStateFlow()
 
-    // Estado del filtro activo
     private val _activeFilter = MutableStateFlow<OrderStatus?>(null)
     val activeFilter: StateFlow<OrderStatus?> = _activeFilter.asStateFlow()
 
@@ -52,6 +51,21 @@ class MyOrdersViewModel(
 
     fun setFilter(status: OrderStatus?) {
         _activeFilter.value = status
+    }
+
+    fun refreshOrderItems(orderId: String) {
+        viewModelScope.launch {
+            runCatching {
+                orderRepository.fetchOrderItemsFromFirestore(orderId)
+            }
+        }
+    }
+
+    fun getOrderById(orderId: String): Order? {
+        val state = _ordersState.value
+        return if (state is OrdersState.Success)
+            state.orders.find { it.id == orderId }
+        else null
     }
 
     class Factory(private val app: Application) : ViewModelProvider.Factory {

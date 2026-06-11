@@ -1,5 +1,6 @@
 package cr.una.expressfood.data.repository
 
+import android.content.Context
 import cr.una.expressfood.data.local.dao.CartItemDao
 import cr.una.expressfood.data.local.dao.OrderDao
 import cr.una.expressfood.data.local.dao.OrderItemDao
@@ -10,6 +11,7 @@ import cr.una.expressfood.domain.model.CartItem
 import cr.una.expressfood.domain.model.OrderStatus
 import cr.una.expressfood.domain.model.Product
 import cr.una.expressfood.domain.model.toDomain
+import cr.una.expressfood.data.sync.SyncScheduler
 import cr.una.expressfood.util.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -18,7 +20,8 @@ import java.util.UUID
 class CartRepository(
     private val cartItemDao: CartItemDao,
     private val orderDao: OrderDao,
-    private val orderItemDao: OrderItemDao
+    private val orderItemDao: OrderItemDao,
+    private val context: Context? = null
 ) {
 
     fun observeCart(clientUid: String): Flow<List<CartItem>> =
@@ -27,9 +30,6 @@ class CartRepository(
     fun observeItemCount(clientUid: String): Flow<Int> =
         cartItemDao.observeItemCount(clientUid)
 
-    /**
-     * Agrega un producto al carrito;si ya existe incrementa la cantidad en 1.
-     */
     suspend fun addProduct(clientUid: String, product: Product) {
         val existing = cartItemDao.getItem(clientUid, product.id)
         if (existing != null) {
@@ -37,14 +37,14 @@ class CartRepository(
         } else {
             cartItemDao.upsert(
                 CartItemEntity(
-                    id             = UUID.randomUUID().toString(),
-                    clientUid      = clientUid,
-                    productId      = product.id,
-                    productName    = product.name,
+                    id              = UUID.randomUUID().toString(),
+                    clientUid       = clientUid,
+                    productId       = product.id,
+                    productName     = product.name,
                     productImageUrl = product.imageUrl,
-                    unitPrice      = product.price,
-                    quantity       = 1,
-                    addedAt        = System.currentTimeMillis()
+                    unitPrice       = product.price,
+                    quantity        = 1,
+                    addedAt         = System.currentTimeMillis()
                 )
             )
         }
@@ -55,11 +55,8 @@ class CartRepository(
     }
 
     suspend fun decreaseQuantity(item: CartItem) {
-        if (item.quantity <= 1) {
-            cartItemDao.deleteById(item.id)
-        } else {
-            cartItemDao.updateQuantity(item.id, item.quantity - 1)
-        }
+        if (item.quantity <= 1) cartItemDao.deleteById(item.id)
+        else cartItemDao.updateQuantity(item.id, item.quantity - 1)
     }
 
     suspend fun removeItem(item: CartItem) {
@@ -81,13 +78,11 @@ class CartRepository(
         notes: String?,
         items: List<CartItem>
     ): String {
-        val orderId    = UUID.randomUUID().toString()
-        val now        = System.currentTimeMillis()
-        val subtotal   = items.sumOf { it.subtotal }
-        val taxes      = subtotal * Constants.TAX_RATE
-        val total      = subtotal + taxes
-
-        // Número de orden correlativo basado en timestamp
+        val orderId     = UUID.randomUUID().toString()
+        val now         = System.currentTimeMillis()
+        val subtotal    = items.sumOf { it.subtotal }
+        val taxes       = subtotal * Constants.TAX_RATE
+        val total       = subtotal + taxes
         val orderNumber = (now % 10000).toInt()
 
         val order = OrderEntity(
@@ -104,30 +99,31 @@ class CartRepository(
             updatedAt       = now,
             deliveryAddress = deliveryAddress,
             notes           = notes,
-            synced          = false,   // se sube a Firestore después
+            synced          = false,
             syncAttempts    = 0
         )
 
         orderDao.upsert(order)
 
-        // Guardar los ítems de la orden
         items.forEach { cartItem ->
             orderItemDao.upsert(
                 OrderItemEntity(
-                    id             = UUID.randomUUID().toString(),
-                    orderId        = orderId,
-                    productId      = cartItem.productId,
-                    productName    = cartItem.productName,
+                    id              = UUID.randomUUID().toString(),
+                    orderId         = orderId,
+                    productId       = cartItem.productId,
+                    productName     = cartItem.productName,
                     productImageUrl = cartItem.productImageUrl,
-                    unitPrice      = cartItem.unitPrice,
-                    quantity       = cartItem.quantity,
-                    subtotal       = cartItem.subtotal
+                    unitPrice       = cartItem.unitPrice,
+                    quantity        = cartItem.quantity,
+                    subtotal        = cartItem.subtotal
                 )
             )
         }
 
-        // Vaciar el carrito después de procesar
         cartItemDao.clearCart(clientUid)
+
+        // Disparar sincronización inmediata si hay red
+        context?.let { SyncScheduler.enqueueSync(it) }
 
         return orderId
     }
@@ -136,7 +132,8 @@ class CartRepository(
         fun default(
             cartItemDao: CartItemDao,
             orderDao: OrderDao,
-            orderItemDao: OrderItemDao
-        ) = CartRepository(cartItemDao, orderDao, orderItemDao)
+            orderItemDao: OrderItemDao,
+            context: Context? = null
+        ) = CartRepository(cartItemDao, orderDao, orderItemDao, context)
     }
 }
