@@ -87,6 +87,34 @@ class OrderRepository(
             }
     }
 
+    suspend fun fetchOrderItemsFromFirestore(orderId: String) {
+        runCatching {
+            val doc = firestore.collection(Constants.Firestore.ORDERS)
+                .document(orderId)
+                .get()
+                .await()
+
+            @Suppress("UNCHECKED_CAST")
+            val itemsList = doc.get("items") as? List<Map<String, Any>> ?: emptyList()
+            itemsList.forEach { itemMap ->
+                runCatching {
+                    val itemEntity = cr.una.expressfood.data.local.entity.OrderItemEntity(
+                        id              = itemMap["id"] as? String
+                            ?: java.util.UUID.randomUUID().toString(),
+                        orderId         = orderId,
+                        productId       = itemMap["productId"] as? String ?: "",
+                        productName     = itemMap["productName"] as? String ?: "",
+                        productImageUrl = itemMap["productImageUrl"] as? String ?: "",
+                        unitPrice       = (itemMap["unitPrice"] as? Number)?.toDouble() ?: 0.0,
+                        quantity        = (itemMap["quantity"] as? Number)?.toInt() ?: 1,
+                        subtotal        = (itemMap["subtotal"] as? Number)?.toDouble() ?: 0.0
+                    )
+                    orderItemDao.upsert(itemEntity)
+                }
+            }
+        }
+    }
+
     suspend fun updateStatus(orderId: String, newStatus: OrderStatus) {
         val now = System.currentTimeMillis()
         orderDao.updateStatus(orderId, newStatus.name, now)

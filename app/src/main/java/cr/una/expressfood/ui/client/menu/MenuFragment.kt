@@ -62,15 +62,13 @@ class MenuFragment : Fragment() {
         observeViewModel()
     }
 
-    // ─── Saludo personalizado ─────────────────────────────────────────────────
-
     private fun setupGreeting() {
         val user = FirebaseAuth.getInstance().currentUser
         val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
         val greeting = when {
-            hour < 12 -> "Buenos días 👋"
-            hour < 18 -> "Buenas tardes 👋"
-            else      -> "Buenas noches 👋"
+            hour < 12 -> "Buenos días "
+            hour < 18 -> "Buenas tardes "
+            else      -> "Buenas noches "
         }
         binding.tvGreeting.text = greeting
         binding.tvUserName.text = user?.displayName ?: "Usuario"
@@ -107,10 +105,11 @@ class MenuFragment : Fragment() {
         }
     }
 
-    // ─── Chips de categorías ──────────────────────────────────────────────────
+    //Chips de categorías
 
     private fun setupCategories() {
         val categories = listOf("Todos", "Hamburguesa", "Pizza", "Sushi", "Bebida", "Postre")
+        var selectedCategory: String? = null
 
         categories.forEach { cat ->
             val chip = Chip(requireContext()).apply {
@@ -124,40 +123,38 @@ class MenuFragment : Fragment() {
                         intArrayOf(android.R.attr.state_checked),
                         intArrayOf(-android.R.attr.state_checked)
                     ),
-                    intArrayOf(
-                        Color.parseColor("#2E7D32"),
-                        Color.parseColor("#F0F0F0")
-                    )
+                    intArrayOf(Color.parseColor("#2E7D32"), Color.parseColor("#F0F0F0"))
                 )
-
-                setTextColor(
-                    ColorStateList(
-                        arrayOf(
-                            intArrayOf(android.R.attr.state_checked),
-                            intArrayOf(-android.R.attr.state_checked)
-                        ),
-                        intArrayOf(
-                            Color.WHITE,
-                            Color.parseColor("#888888")
-                        )
-                    )
-                )
+                setTextColor(ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked)
+                    ),
+                    intArrayOf(Color.WHITE, Color.parseColor("#888888"))
+                ))
+                chipIconTint = null
+                isChipIconVisible = false
+                isCheckedIconVisible = false  // ← quitar el check icon
 
                 setOnClickListener {
-                    binding.categoryRow.children.forEach { view ->
-                        (view as? Chip)?.isChecked = false
+                    // Deseleccionar todos
+                    binding.categoryRow.children.forEach { v ->
+                        (v as? Chip)?.isChecked = false
                     }
+                    // Seleccionar este
                     isChecked = true
-                    if (cat == "Todos") adapter.filterByCategory(null)
-                    else adapter.filterByCategory(cat)
+                    selectedCategory = if (cat == "Todos") null else cat
+
+                    // Aplicar filtro
                     binding.etSearch.setText("")
+                    adapter.filterByCategory(selectedCategory)
                 }
             }
             binding.categoryRow.addView(chip)
         }
     }
 
-    // ─── ViewModel ────────────────────────────────────────────────────────────
+    //  ViewModel
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
