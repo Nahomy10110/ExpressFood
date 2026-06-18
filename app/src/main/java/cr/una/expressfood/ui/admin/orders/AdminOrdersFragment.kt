@@ -20,6 +20,7 @@ import cr.una.expressfood.domain.model.OrderStatus
 import cr.una.expressfood.domain.model.toLabel
 import cr.una.expressfood.ui.login.LoginActivity
 import kotlinx.coroutines.launch
+import cr.una.expressfood.data.sync.SyncScheduler
 
 class AdminOrdersFragment : Fragment() {
 
@@ -139,6 +140,7 @@ class AdminOrdersFragment : Fragment() {
 
     private fun setupLogout() {
         binding.btnLogout.setOnClickListener {
+            SyncScheduler.cancelSync(requireContext())
             FirebaseAuth.getInstance().signOut()
             startActivity(
                 Intent(requireContext(), LoginActivity::class.java).apply {

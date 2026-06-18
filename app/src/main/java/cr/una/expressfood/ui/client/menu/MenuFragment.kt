@@ -18,6 +18,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import cr.una.expressfood.databinding.FragmentMenuBinding
+import cr.una.expressfood.ui.client.ClientMainActivity
 import cr.una.expressfood.ui.client.cart.CartViewModel
 import kotlinx.coroutines.launch
 
@@ -61,15 +62,13 @@ class MenuFragment : Fragment() {
         observeViewModel()
     }
 
-    // ─── Saludo personalizado ─────────────────────────────────────────────────
-
     private fun setupGreeting() {
         val user = FirebaseAuth.getInstance().currentUser
         val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
         val greeting = when {
-            hour < 12 -> "Buenos días 👋"
-            hour < 18 -> "Buenas tardes 👋"
-            else      -> "Buenas noches 👋"
+            hour < 12 -> "Buenos días "
+            hour < 18 -> "Buenas tardes "
+            else      -> "Buenas noches "
         }
         binding.tvGreeting.text = greeting
         binding.tvUserName.text = user?.displayName ?: "Usuario"
@@ -80,6 +79,11 @@ class MenuFragment : Fragment() {
                 .circleCrop()
                 .placeholder(cr.una.expressfood.R.drawable.bg_avatar_circle)
                 .into(binding.ivUserAvatar)
+        }
+
+        // Logout del cliente
+        binding.btnClientLogout.setOnClickListener {
+            (requireActivity() as? ClientMainActivity)?.logout()
         }
     }
 
@@ -95,16 +99,17 @@ class MenuFragment : Fragment() {
     private fun setupSearch() {
         binding.etSearch.addTextChangedListener { text ->
             adapter.filter(text.toString())
-            binding.tvEmpty.visibility =
+            binding.layoutEmpty.visibility =
                 if (adapter.itemCount == 0 && !text.isNullOrBlank()) View.VISIBLE
                 else View.GONE
         }
     }
 
-    // ─── Chips de categorías ──────────────────────────────────────────────────
+    //Chips de categorías
 
     private fun setupCategories() {
         val categories = listOf("Todos", "Hamburguesa", "Pizza", "Sushi", "Bebida", "Postre")
+        var selectedCategory: String? = null
 
         categories.forEach { cat ->
             val chip = Chip(requireContext()).apply {
@@ -113,65 +118,62 @@ class MenuFragment : Fragment() {
                 isCheckable = true
                 isChecked   = cat == "Todos"
 
-                // Fix: usar Array<IntArray> en lugar de intArrayOf para el primer parámetro
                 chipBackgroundColor = ColorStateList(
                     arrayOf(
                         intArrayOf(android.R.attr.state_checked),
                         intArrayOf(-android.R.attr.state_checked)
                     ),
-                    intArrayOf(
-                        Color.parseColor("#2E7D32"),
-                        Color.parseColor("#F0F0F0")
-                    )
+                    intArrayOf(Color.parseColor("#2E7D32"), Color.parseColor("#F0F0F0"))
                 )
-
-                setTextColor(
-                    ColorStateList(
-                        arrayOf(
-                            intArrayOf(android.R.attr.state_checked),
-                            intArrayOf(-android.R.attr.state_checked)
-                        ),
-                        intArrayOf(
-                            Color.WHITE,
-                            Color.parseColor("#888888")
-                        )
-                    )
-                )
+                setTextColor(ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked)
+                    ),
+                    intArrayOf(Color.WHITE, Color.parseColor("#888888"))
+                ))
+                chipIconTint = null
+                isChipIconVisible = false
+                isCheckedIconVisible = false  // ← quitar el check icon
 
                 setOnClickListener {
+                    // Deseleccionar todos
                     binding.categoryRow.children.forEach { v ->
                         (v as? Chip)?.isChecked = false
                     }
+                    // Seleccionar este
                     isChecked = true
-                    if (cat == "Todos") adapter.filterByCategory(null)
-                    else adapter.filterByCategory(cat)
+                    selectedCategory = if (cat == "Todos") null else cat
+
+                    // Aplicar filtro
                     binding.etSearch.setText("")
+                    adapter.filterByCategory(selectedCategory)
                 }
             }
             binding.categoryRow.addView(chip)
         }
     }
 
-    // ─── ViewModel ────────────────────────────────────────────────────────────
+    //  ViewModel
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.menuState.collect { state ->
                 when (state) {
                     is MenuViewModel.MenuState.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                        binding.rvMenu.visibility      = View.GONE
-                        binding.tvEmpty.visibility     = View.GONE
+                        binding.progressBar.visibility  = View.VISIBLE
+                        binding.rvMenu.visibility       = View.GONE
+                        binding.layoutEmpty.visibility  = View.GONE
                     }
                     is MenuViewModel.MenuState.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.rvMenu.visibility      = View.VISIBLE
-                        binding.tvEmpty.visibility     = View.GONE
+                        binding.progressBar.visibility  = View.GONE
+                        binding.rvMenu.visibility       = View.VISIBLE
+                        binding.layoutEmpty.visibility  = View.GONE
                         adapter.setItems(state.products)
                     }
                     is MenuViewModel.MenuState.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.rvMenu.visibility      = View.VISIBLE
+                        binding.progressBar.visibility  = View.GONE
+                        binding.rvMenu.visibility       = View.VISIBLE
                         Snackbar.make(binding.root, state.message, Snackbar.LENGTH_SHORT).show()
                     }
                 }
